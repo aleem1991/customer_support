@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: support-agent-config
+  namespace: support-agent
+data:
+  AWS_REGION: "eu-north-1"
+  S3_BUCKET: "support-agent-bucket-2026"
+  CHROMA_S3_KEY: "chroma/chroma_db.zip"
+  CHROMA_COLLECTION: "support_knowledge_base"
+  CHROMA_LOCAL_PATH: "/tmp/chroma_db"
+  RDS_PORT: "5432"
+  RDS_DB: "supportagent"
+  REDIS_HOST: "redis-service"
+  REDIS_PORT: "6379"
+  REDIS_DB: "0"
+  CACHE_ENABLED: "true"
+  ENVIRONMENT: "production"
+  LOG_LEVEL: "INFO"
