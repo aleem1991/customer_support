@@ -14,7 +14,7 @@ import logging
 
 import psycopg2
 import boto3
-from openai import OpenAI
+from openai import OpenAI, AzureOpenAI
 from langchain.tools import tool
 
 from src.utils.cache import get_redis, cache_get, cache_set
@@ -22,7 +22,14 @@ from src.utils.config import settings
 
 logger = logging.getLogger("support_agent.tools")
 
-client = OpenAI(api_key=settings.OPENAI_API_KEY)
+if getattr(settings, "AZURE_OPENAI_ENDPOINT", None):
+    client = AzureOpenAI(
+        azure_endpoint=settings.AZURE_OPENAI_ENDPOINT,
+        api_key=settings.OPENAI_API_KEY,
+        api_version=getattr(settings, "OPENAI_API_VERSION", "2024-06-01"),
+    )
+else:
+    client = OpenAI(api_key=settings.OPENAI_API_KEY)
 EMBED_MODEL = "text-embedding-3-large"
 
 _chroma_collection = None  # set by load_chroma_collection() at startup

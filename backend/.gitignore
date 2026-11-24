@@ -9,3 +9,6 @@ build/
 .pytest_cache/
 /tmp/
 chroma_db/
+
+chroma_db_build/
+knowledge_base/

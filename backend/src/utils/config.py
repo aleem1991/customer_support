@@ -8,8 +8,11 @@ from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
-    # OpenAI
+    # OpenAI / Azure OpenAI
     OPENAI_API_KEY: str
+    AZURE_OPENAI_ENDPOINT: str = "https://enzi-resource.services.ai.azure.com/"
+    OPENAI_API_VERSION: str = "2024-06-01"
+    OPENAI_DEPLOYMENT_NAME: str = "gpt-4o"
 
     # AWS
     AWS_ACCESS_KEY_ID: str

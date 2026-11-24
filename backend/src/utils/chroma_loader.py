@@ -26,7 +26,10 @@ def load_chroma_collection():
         region_name=settings.AWS_REGION,
     )
 
-    zip_local_path = f"/tmp/chroma_db_{uuid.uuid4().hex[:8]}.zip"
+    import tempfile
+
+    temp_dir = tempfile.gettempdir()
+    zip_local_path = os.path.join(temp_dir, f"chroma_db_{uuid.uuid4().hex[:8]}.zip")
     logger.info(f"Downloading Chroma collection from s3://{settings.S3_BUCKET}/{settings.CHROMA_S3_KEY}")
     s3.download_file(settings.S3_BUCKET, settings.CHROMA_S3_KEY, zip_local_path)
 
@@ -36,7 +39,10 @@ def load_chroma_collection():
     # file handle on chroma.sqlite3 in that folder, which makes
     # shutil.rmtree() fail with WinError 32. A fresh folder avoids the
     # conflict entirely -- nothing needs to be deleted before we can proceed.
-    extract_path = f"{settings.CHROMA_LOCAL_PATH}_{uuid.uuid4().hex[:8]}"
+    extract_base = settings.CHROMA_LOCAL_PATH
+    if extract_base.startswith("/tmp"):
+        extract_base = os.path.join(temp_dir, os.path.basename(extract_base))
+    extract_path = f"{extract_base}_{uuid.uuid4().hex[:8]}"
     os.makedirs(extract_path, exist_ok=True)
 
     with zipfile.ZipFile(zip_local_path, "r") as zf:

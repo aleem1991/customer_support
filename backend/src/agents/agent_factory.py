@@ -10,7 +10,7 @@
 import os
 import json
 
-from langchain_openai import ChatOpenAI
+from langchain_openai import ChatOpenAI, AzureChatOpenAI
 from langgraph.prebuilt import create_react_agent
 
 from src.tools.database_tools import (
@@ -29,7 +29,16 @@ def load_prompt(name: str) -> str:
         return f.read()
 
 
-llm = ChatOpenAI(model="gpt-4o-mini", temperature=0, api_key=settings.OPENAI_API_KEY)
+if getattr(settings, "AZURE_OPENAI_ENDPOINT", None):
+    llm = AzureChatOpenAI(
+        azure_deployment=getattr(settings, "OPENAI_DEPLOYMENT_NAME", "gpt-4o"),
+        openai_api_version=getattr(settings, "OPENAI_API_VERSION", "2024-06-01"),
+        azure_endpoint=settings.AZURE_OPENAI_ENDPOINT,
+        api_key=settings.OPENAI_API_KEY,
+        temperature=0,
+    )
+else:
+    llm = ChatOpenAI(model="gpt-4o-mini", temperature=0, api_key=settings.OPENAI_API_KEY)
 
 SYSTEM_RULES = load_prompt("system_rules")
 
