@@ -27,6 +27,8 @@ if getattr(settings, "AZURE_OPENAI_ENDPOINT", None):
         azure_endpoint=settings.AZURE_OPENAI_ENDPOINT,
         api_key=settings.OPENAI_API_KEY,
         api_version=getattr(settings, "OPENAI_API_VERSION", "2024-06-01"),
+        max_retries=3,
+        timeout=30.0,
     )
 else:
     client = OpenAI(api_key=settings.OPENAI_API_KEY)
@@ -36,7 +38,7 @@ _chroma_collection = None  # set by load_chroma_collection() at startup
 
 
 def get_db():
-    return psycopg2.connect(settings.DATABASE_URL)
+    return psycopg2.connect(settings.DATABASE_URL, connect_timeout=10)
 
 
 def set_chroma_collection(collection):

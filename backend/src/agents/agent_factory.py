@@ -36,6 +36,8 @@ if getattr(settings, "AZURE_OPENAI_ENDPOINT", None):
         azure_endpoint=settings.AZURE_OPENAI_ENDPOINT,
         api_key=settings.OPENAI_API_KEY,
         temperature=0,
+        max_retries=3,
+        request_timeout=30,
     )
 else:
     llm = ChatOpenAI(model="gpt-4o-mini", temperature=0, api_key=settings.OPENAI_API_KEY)
